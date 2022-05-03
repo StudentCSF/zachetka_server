@@ -2,11 +2,16 @@ package ru.vsu.cs.zachetka_server.model.entity;
 
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Entity
 @Table(name = "subject", schema = "public")
 public class SubjectEntity {
@@ -15,7 +20,7 @@ public class SubjectEntity {
     @Column
     private UUID uid;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
     @Column

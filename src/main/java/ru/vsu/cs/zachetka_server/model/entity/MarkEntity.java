@@ -3,30 +3,35 @@ package ru.vsu.cs.zachetka_server.model.entity;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Entity
 @Table(name = "mark", schema = "public")
 public class MarkEntity {
     @Id
-    @Column
+    @Column(name = "uid")
     private UUID uid;
 
-    @Column
+    @Column(name = "stud_uid")
     private UUID studUid;
 
-    @Column
+    @Column(name = "subj_lect_uid")
     private UUID slUid;
 
-    @Column
+    @Column(name = "mark")
     private Byte mark;
 
-    @Column
+    @Column(name = "date")
     private LocalDate date;
 }

@@ -1,11 +1,16 @@
 package ru.vsu.cs.zachetka_server.model.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Entity
 @Table(name = "student", schema = "public")
 public class StudentEntity {
@@ -13,12 +18,15 @@ public class StudentEntity {
     @Column(name = "id", nullable = false)
     private UUID uid;
 
-    @Column
+    @Column(name = "user_uid")
+    private UUID userUid;
+
+    @Column(name = "fio")
     private String fio;
 
-    @Column
+    @Column(name = "course")
     private Byte course;
 
-    @Column
-    private Byte gruppa;
+    @Column(name = "group_number")
+    private Float group;
 }

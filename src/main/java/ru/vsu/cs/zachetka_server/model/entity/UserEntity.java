@@ -2,25 +2,31 @@ package ru.vsu.cs.zachetka_server.model.entity;
 
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.*;
+import ru.vsu.cs.zachetka_server.model.enumerate.UserRole;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "user_", schema = "public")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @Column(name = "uid")
     private UUID uid;
 
-    @Column
+    @Column(name = "login")
     private String login;
 
-    @Column
+    @Column(name = "password")
     private String password;
 
-    @Column
-    private Byte role;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 }
