@@ -4,11 +4,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import lombok.*;
+import ru.vsu.cs.zachetka_server.model.enumerate.Mark;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -19,6 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "mark", schema = "public")
 public class MarkEntity {
+
     @Id
     @Column(name = "uid")
     private UUID uid;
@@ -30,7 +29,8 @@ public class MarkEntity {
     private UUID slUid;
 
     @Column(name = "mark")
-    private Byte mark;
+    @Enumerated(EnumType.STRING)
+    private Mark mark;
 
     @Column(name = "date")
     private LocalDate date;

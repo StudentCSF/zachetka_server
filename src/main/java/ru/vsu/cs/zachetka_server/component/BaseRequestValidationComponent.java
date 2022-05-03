@@ -1,5 +1,6 @@
 package ru.vsu.cs.zachetka_server.component;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import ru.vsu.cs.zachetka_server.model.dto.request.IValidated;
 
@@ -12,6 +13,7 @@ public class BaseRequestValidationComponent {
 
     private final Validator validator;
 
+    @Autowired
     public BaseRequestValidationComponent(Validator validator) {
         this.validator = validator;
     }

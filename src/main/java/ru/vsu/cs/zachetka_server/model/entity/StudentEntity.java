@@ -14,8 +14,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "student", schema = "public")
 public class StudentEntity {
+
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private UUID uid;
 
     @Column(name = "user_uid")

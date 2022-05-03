@@ -2,16 +2,16 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.AuthUserRequest;
 import ru.vsu.cs.zachetka_server.model.entity.UserEntity;
 import ru.vsu.cs.zachetka_server.service.UserService;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,8 +19,6 @@ import java.util.Locale;
 public class UserController {
 
     private final UserService userService;
-
-    private final String host = "http://localhost:8080";
 
     @Autowired
     public UserController(UserService userService) {

@@ -18,6 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "lecturer", schema = "public")
 public class LecturerEntity {
+
     @Id
     @Column
     private UUID uid;

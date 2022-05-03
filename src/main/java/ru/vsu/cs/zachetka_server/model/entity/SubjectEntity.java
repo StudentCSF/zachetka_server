@@ -15,8 +15,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "subject", schema = "public")
 public class SubjectEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private UUID uid;
 
@@ -24,5 +24,5 @@ public class SubjectEntity {
     private String name;
 
     @Column
-    private String semester;
+    private Byte semester;
 }
