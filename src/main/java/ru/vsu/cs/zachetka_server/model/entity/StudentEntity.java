@@ -16,7 +16,7 @@ import java.util.UUID;
 public class StudentEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "uid")
     private UUID uid;
 
     @Column(name = "user_uid")

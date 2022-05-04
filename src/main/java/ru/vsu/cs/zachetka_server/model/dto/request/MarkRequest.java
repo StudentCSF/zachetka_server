@@ -18,7 +18,6 @@ public class MarkRequest implements IValidated {
     @NotNull
     private UUID studUid;
 
-    @NotNull
     private Mark mark;
 
     private LocalDate date;

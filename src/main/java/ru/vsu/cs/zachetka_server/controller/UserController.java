@@ -12,8 +12,7 @@ import ru.vsu.cs.zachetka_server.model.dto.request.AuthUserRequest;
 import ru.vsu.cs.zachetka_server.model.entity.UserEntity;
 import ru.vsu.cs.zachetka_server.service.UserService;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @RestController
 public class UserController {
@@ -39,6 +38,6 @@ public class UserController {
     public RedirectView authorize(@RequestBody AuthUserRequest authUserRequest) {
         UserEntity user = this.userService.authUser(authUserRequest);
         String role = user.getRole().name().toLowerCase(Locale.ROOT);
-        return new RedirectView(String.format("/%s", role));
+        return new RedirectView(String.format("/%s/%s", role, user.getUid()));
     }
 }

@@ -14,4 +14,6 @@ public interface MarkRepository extends JpaRepository<MarkEntity, UUID> {
     List<MarkEntity> findAllByStudUid(UUID studUid);
 
     Optional<MarkEntity> findByStudUidAndSlUid(UUID studUid, UUID slUid);
+
+    List<MarkEntity> findAllBySlUid(UUID slUid);
 }

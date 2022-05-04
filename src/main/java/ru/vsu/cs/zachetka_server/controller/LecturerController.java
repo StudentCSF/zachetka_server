@@ -1,11 +1,11 @@
 package ru.vsu.cs.zachetka_server.controller;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.vsu.cs.zachetka_server.model.dto.response.StudentRawResponse;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -22,5 +22,12 @@ public class LecturerController {
                             @PathVariable(value = "user_uid") UUID userUid
     ) {
         this.lecturerService.addLecturer(fio, userUid);
+    }
+
+    @GetMapping("/lecturer/{user_lect_uid}")
+    public Map<String, Map<Float, List<StudentRawResponse>>> getMainPage(
+            @PathVariable("user_lect_uid") UUID uid
+    ) {
+        return this.lecturerService.getData(uid);
     }
 }
