@@ -8,7 +8,6 @@ import ru.vsu.cs.zachetka_server.exception.SubjLectAlreadyExistsException;
 import ru.vsu.cs.zachetka_server.model.dto.request.SubjLectRequest;
 import ru.vsu.cs.zachetka_server.model.entity.SubjLectEntity;
 import ru.vsu.cs.zachetka_server.repository.SubjLectRepository;
-import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
 
 import java.util.UUID;
 
