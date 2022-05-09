@@ -1,6 +1,7 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +26,8 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public Dumb test() {
-        return Dumb.builder().str("test").build();
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("test");
     }
 
     @GetMapping("/user")
