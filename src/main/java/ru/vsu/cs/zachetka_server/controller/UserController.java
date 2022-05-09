@@ -1,14 +1,12 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.AuthUserRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.Dumb;
 import ru.vsu.cs.zachetka_server.model.dto.response.RedirectAuthResponse;
 import ru.vsu.cs.zachetka_server.model.entity.UserEntity;
 import ru.vsu.cs.zachetka_server.service.UserService;
@@ -41,7 +39,8 @@ public class UserController {
         UserEntity user = this.userService.authUser(authUserRequest);
         String role = user.getRole().name().toLowerCase(Locale.ROOT);
         return RedirectAuthResponse.builder()
-                .redirect(String.format("/%s/%s", role, user.getUid()))
+                .role(role)
+                .userUid(user.getUid())
                 .build();
     }
 }
