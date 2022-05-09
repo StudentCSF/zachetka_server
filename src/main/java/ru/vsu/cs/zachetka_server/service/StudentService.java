@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
+import ru.vsu.cs.zachetka_server.model.dto.response.MainStudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.StudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.repository.*;
@@ -53,7 +54,7 @@ public class StudentService {
         );
     }
 
-    public Map<Byte, List<StudentInfoResponse>> getInfo(UUID userUid) {
+    public MainStudentInfoResponse getInfo(UUID userUid) {
         if (userUid == null) {
             throw new RequestNotValidException();
         }
@@ -88,6 +89,9 @@ public class StudentService {
             );
         }
 
-        return result;
+        return MainStudentInfoResponse.builder()
+                .info(result)
+                .fio(studentEntity.getFio())
+                .build();
     }
 }
