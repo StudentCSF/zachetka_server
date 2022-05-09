@@ -24,8 +24,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     @GetMapping("/user")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         return null;
     }
 
@@ -34,17 +39,17 @@ public class UserController {
         this.userService.addUser(addUserRequest);
     }
 
-    @PostMapping("/user/au")
-    public RedirectView authorize(@RequestBody AuthUserRequest authUserRequest) {
-        UserEntity user = this.userService.authUser(authUserRequest);
-        String role = user.getRole().name().toLowerCase(Locale.ROOT);
-        return new RedirectView(String.format("/%s/%s", role, user.getUid()));
-    }
+//    @PostMapping("/user/au")
+//    public RedirectView authorize(@RequestBody AuthUserRequest authUserRequest) {
+//        UserEntity user = this.userService.authUser(authUserRequest);
+//        String role = user.getRole().name().toLowerCase(Locale.ROOT);
+//        return new RedirectView(String.format("/%s/%s", role, user.getUid()));
+//    }
 
     @PostMapping("/user/auth")
     public String authorizeUser(@RequestBody AuthUserRequest authUserRequest) {
         UserEntity user = this.userService.authUser(authUserRequest);
         String role = user.getRole().name().toLowerCase(Locale.ROOT);
-        return String.format("/%s/%s", role, user.getUid());
+        return String.format("%s%s", role, user.getUid());
     }
 }
