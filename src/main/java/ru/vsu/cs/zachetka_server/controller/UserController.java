@@ -1,18 +1,18 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.AuthUserRequest;
+import ru.vsu.cs.zachetka_server.model.dto.response.Dumb;
 import ru.vsu.cs.zachetka_server.model.entity.UserEntity;
 import ru.vsu.cs.zachetka_server.service.UserService;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 @RestController
 public class UserController {
@@ -25,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public String test() {
-        return "test";
+    public Dumb test() {
+        return Dumb.builder().str("test").build();
     }
 
     @GetMapping("/user")
