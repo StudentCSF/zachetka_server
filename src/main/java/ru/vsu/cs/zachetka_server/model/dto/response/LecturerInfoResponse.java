@@ -4,12 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import ru.vsu.cs.zachetka_server.model.enumerate.Mark;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @Builder
-public class StudentRawResponse {
+public class LecturerInfoResponse {
 
     UUID studUid;
 
@@ -17,5 +16,5 @@ public class StudentRawResponse {
 
     Mark mark;
 
-    LocalDate examDate;
+    String examDate;
 }

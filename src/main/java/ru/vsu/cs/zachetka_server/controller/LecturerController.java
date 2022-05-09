@@ -1,7 +1,8 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.zachetka_server.model.dto.response.StudentRawResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.LecturerInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.MainLecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class LecturerController {
     }
 
     @GetMapping("/lecturer/{user_lect_uid}")
-    public Map<String, Map<Float, List<StudentRawResponse>>> getMainPage(
+    public MainLecturerInfoResponse getMainPage(
             @PathVariable("user_lect_uid") UUID uid
     ) {
         return this.lecturerService.getData(uid);

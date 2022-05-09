@@ -3,7 +3,10 @@ package ru.vsu.cs.zachetka_server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.exception.*;
-import ru.vsu.cs.zachetka_server.model.dto.response.StudentRawResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.LecturerInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.LecturerKeySubjectResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.LecturerTableResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.MainLecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.repository.*;
 
@@ -54,7 +57,7 @@ public class LecturerService {
         );
     }
 
-    public Map<String, Map<Float, List<StudentRawResponse>>> getData(UUID userUid) {
+    public MainLecturerInfoResponse getData(UUID userUid) {
         LecturerEntity lecturerEntity = this.lecturerRepository.findByUserUid(userUid)
                 .orElseThrow(LecturerNotFoundException::new);
 
@@ -68,10 +71,14 @@ public class LecturerService {
                         )
                 );
 
-        Map<String, Map<Float, List<StudentRawResponse>>> result = new TreeMap<>();
+        Map<LecturerKeySubjectResponse, LecturerTableResponse> result = new TreeMap<>(
+                Comparator.comparing(LecturerKeySubjectResponse::getSemester)
+                        .reversed()
+                        .thenComparing(LecturerKeySubjectResponse::getName)
+        );
 
         for (Map.Entry<SubjectEntity, List<MarkEntity>> kv : subjMarksMap.entrySet()) {
-            Map<Float, List<StudentRawResponse>> value = new TreeMap<>();
+            Map<Float, List<LecturerInfoResponse>> value = new TreeMap<>();
             for (MarkEntity markEntity : kv.getValue()) {
                 StudentEntity studentEntity = this.studentRepository.findById(markEntity.getStudUid())
                         .orElseThrow(StudentNotFoundException::new);
@@ -79,22 +86,34 @@ public class LecturerService {
                     value.put(studentEntity.getGroup(), new ArrayList<>());
                 }
                 value.get(studentEntity.getGroup()).add(
-                        StudentRawResponse.builder()
+                        LecturerInfoResponse.builder()
                                 .mark(markEntity.getMark())
-                                .examDate(markEntity.getDate())
+                                .examDate(markEntity.getDate().toString())
                                 .studFio(studentEntity.getFio())
                                 .studUid(studentEntity.getUid())
                                 .build());
             }
-            for (List<StudentRawResponse> l : value.values())
-                l.sort(Comparator.comparing(StudentRawResponse::getStudFio));
+            for (List<LecturerInfoResponse> l : value.values())
+                l.sort(Comparator.comparing(LecturerInfoResponse::getStudFio));
 
-            result.put(String.format("%s (%s семестр)",
-                    kv.getKey().getName(),
-                    kv.getKey().getSemester()
-            ), value);
+            result.put(LecturerKeySubjectResponse.builder()
+                            .name(kv.getKey().getName())
+                            .semester(kv.getKey().getSemester())
+                            .slUid(this.subjLectRepository.findByLectUidAndSubjUid(
+                                            lecturerEntity.getUid(),
+                                            kv.getKey().getUid()
+                                    )
+                                    .orElseThrow(SubjectNotFoundException::new)
+                                    .getUid())
+                            .build()
+                    , LecturerTableResponse.builder()
+                            .table(value)
+                            .build());
         }
 
-        return result;
+        return MainLecturerInfoResponse.builder()
+                .fio(lecturerEntity.getFio())
+                .info(result)
+                .build();
     }
 }
