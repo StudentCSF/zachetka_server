@@ -21,6 +21,6 @@ public class LecturerKeySubjectResponse {
     @Override
     @JsonValue
     public String toString() {
-        return this.slUid + "$" + this.name + "$" +  this.semester;
+        return this.slUid + "%" + this.name + "%" +  this.semester;
     }
 }
