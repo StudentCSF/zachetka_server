@@ -3,7 +3,7 @@ package ru.vsu.cs.zachetka_server.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.MainStudentInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.student.MainStudentInfoResponse;
 import ru.vsu.cs.zachetka_server.service.StudentService;
 
 import java.util.UUID;

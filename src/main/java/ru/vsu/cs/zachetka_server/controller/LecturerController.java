@@ -1,7 +1,7 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.zachetka_server.model.dto.response.MainLecturerInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.MainLecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
 import java.util.UUID;

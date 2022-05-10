@@ -1,4 +1,4 @@
-package ru.vsu.cs.zachetka_server.model.dto.response;
+package ru.vsu.cs.zachetka_server.model.dto.response.lecturer;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.*;

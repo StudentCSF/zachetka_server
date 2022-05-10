@@ -1,4 +1,4 @@
-package ru.vsu.cs.zachetka_server.model.dto.response;
+package ru.vsu.cs.zachetka_server.model.dto.response.lecturer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import java.util.Map;
 
 @Data
 @Builder
-public class MainLecturerInfoResponse {
-
-    private String fio;
+public class LecturerPeriodDataResponse {
 
     @JsonSerialize(keyUsing = LecturerKeySubjectSerializer.class)
-    private Map<LecturerKeySubjectResponse, LecturerTableResponse> info;
+    private Map<LecturerKeySubjectResponse, LecturerTableResponse> subjects;
 }

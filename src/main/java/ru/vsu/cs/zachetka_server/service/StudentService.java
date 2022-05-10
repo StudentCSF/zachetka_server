@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.MainStudentInfoResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.StudentInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.student.MainStudentInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.student.StudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.repository.*;
 

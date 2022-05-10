@@ -29,5 +29,8 @@ public class SubjLectEntity {
     @Column(name = "lect_uid")
     private UUID lectUid;
 
+    @Column(name = "period")
+    private String period;
+
 
 }

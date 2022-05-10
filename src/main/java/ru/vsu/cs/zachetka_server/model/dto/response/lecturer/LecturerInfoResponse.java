@@ -1,4 +1,4 @@
-package ru.vsu.cs.zachetka_server.model.dto.response;
+package ru.vsu.cs.zachetka_server.model.dto.response.lecturer;
 
 import lombok.Builder;
 import lombok.Data;
