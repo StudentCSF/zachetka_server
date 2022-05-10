@@ -3,11 +3,15 @@ package ru.vsu.cs.zachetka_server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.exception.*;
+import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.*;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
 import ru.vsu.cs.zachetka_server.model.entity.*;
+import ru.vsu.cs.zachetka_server.model.enumerate.Mark;
 import ru.vsu.cs.zachetka_server.repository.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -134,5 +138,30 @@ public class LecturerService {
                 .fio(lecturerEntity.getFio())
                 .info(result)
                 .build();
+    }
+
+    public List<LecturerInfoResponse> updateGroupData(
+            UUID uid,
+            List<UpdateGroupMarksRequest> updateGroupMarksRequests
+    ) {
+        List<LecturerInfoResponse> result = new ArrayList<>();
+        for (UpdateGroupMarksRequest curr : updateGroupMarksRequests) {
+            MarkEntity markEntity = this.markRepository.findByStudUidAndSlUid(curr.getStudUid(), uid)
+                    .orElseThrow(MarkRawNotFoundException::new);
+            markEntity.setMark(curr.getMark() == Mark.NONE ? null : curr.getMark());
+            markEntity.setDate(curr.getDate().length() == 0 ?
+                    null :
+                    LocalDate.parse(curr.getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+            this.markRepository.save(markEntity);
+            result.add(LecturerInfoResponse.builder()
+                    .examDate(markEntity.getDate().toString())
+                    .studFio(this.studentRepository.findById(markEntity.getStudUid())
+                            .orElseThrow(StudentNotFoundException::new)
+                            .getFio())
+                    .mark(markEntity.getMark())
+                    .studUid(markEntity.getStudUid())
+                    .build());
+        }
+        return result;
     }
 }

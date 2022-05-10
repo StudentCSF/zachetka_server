@@ -9,4 +9,5 @@ public enum Mark {
     UDOVL,
     NEUD,
     NYA,
+    NONE,
 }
