@@ -2,10 +2,12 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerKeySubjectResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableResponse;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
-import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,13 +26,6 @@ public class LecturerController {
     ) {
         this.lecturerService.addLecturer(fio, userUid);
     }
-
-//    @GetMapping("/lecturer/{user_lect_uid}")
-//    public MainLecturerInfoResponse getMainPage(
-//            @PathVariable("user_lect_uid") UUID uid
-//    ) {
-//        return this.lecturerService.getData(uid);
-//    }
 
     @GetMapping("/lecturer/{user_lect_uid}")
     public LecturerFirstResponse getMainPage(
