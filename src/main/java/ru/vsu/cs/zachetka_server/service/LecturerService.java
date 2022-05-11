@@ -197,4 +197,30 @@ public class LecturerService {
 
         return result;
     }
+
+    public LecturerTableResponse getTables(UUID uid) {
+        List<MarkEntity> markEntities = this.markRepository.findAllBySlUid(uid);
+        Map<Float, List<LecturerInfoResponse>> result = new TreeMap<>();
+        StudentEntity student;
+        for (MarkEntity mark : markEntities) {
+            student = this.studentRepository.findById(mark.getStudUid())
+                    .orElseThrow(StudentNotFoundException::new);
+            if (!result.containsKey(student.getGroup()))
+                result.put(student.getGroup(), new ArrayList<>());
+            result.get(student.getGroup()).add(LecturerInfoResponse.builder()
+                    .studUid(student.getUid())
+                    .mark(mark.getMark())
+                    .studFio(student.getFio())
+                    .examDate(mark.getDate().toString())
+                    .build()
+            );
+        }
+
+        for (List<LecturerInfoResponse> l : result.values())
+            l.sort(Comparator.comparing(LecturerInfoResponse::getStudFio));
+
+        return LecturerTableResponse.builder()
+                .table(result)
+                .build();
+    }
 }

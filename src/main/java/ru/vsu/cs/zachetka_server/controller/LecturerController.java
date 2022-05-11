@@ -5,6 +5,7 @@ import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
+import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,5 +53,10 @@ public class LecturerController {
             @PathVariable(value = "period") String period
     ) {
         return this.lecturerService.getSubjects(uid, period);
+    }
+
+    @GetMapping("/lecturer/groups/{sl_uid}")
+    public LecturerTableResponse getTables(@PathVariable(value = "sl_uid") UUID uid) {
+        return this.lecturerService.getTables(uid);
     }
 }
