@@ -14,4 +14,6 @@ public interface SubjLectRepository extends JpaRepository<SubjLectEntity, UUID> 
     Optional<SubjLectEntity> findByLectUidAndSubjUid(UUID lectUid, UUID subjUid);
 
     List<SubjLectEntity> findAllByLectUid(UUID uid);
+
+    List<SubjLectEntity> findAllByLectUidAndPeriod(UUID uid, String period);
 }

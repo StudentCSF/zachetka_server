@@ -177,4 +177,24 @@ public class LecturerService {
                 .periods(subjLectEntity.stream().map(SubjLectEntity::getPeriod).collect(Collectors.toSet()))
                 .build();
     }
+
+    public List<LecturerKeySubjectResponse> getSubjects(UUID uid, String period) {
+        List<SubjLectEntity> subjLectEntities = this.subjLectRepository.findAllByLectUidAndPeriod(uid, period);
+
+        List<LecturerKeySubjectResponse> result = new ArrayList<>();
+
+        for (SubjLectEntity subjLectEntity : subjLectEntities) {
+            SubjectEntity subjectEntity = this.subjectRepository.findById(subjLectEntity.getSubjUid())
+                    .orElseThrow(SubjectNotFoundException::new);
+            result.add(LecturerKeySubjectResponse.builder()
+                    .name(subjectEntity.getName())
+                    .semester(subjectEntity.getSemester())
+                    .evalType(subjLectEntity.getEvalType())
+                    .slUid(subjLectEntity.getUid())
+                    .build()
+            );
+        }
+
+        return result;
+    }
 }

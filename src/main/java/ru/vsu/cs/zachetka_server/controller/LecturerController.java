@@ -2,10 +2,7 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.MainLecturerInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
 import java.util.List;
@@ -49,5 +46,11 @@ public class LecturerController {
         return this.lecturerService.updateGroupData(uid, updateGroupMarksRequests);
     }
 
-//    public
+    @GetMapping("/lecturer/subjects/{lect_uid}/{period}")
+    public List<LecturerKeySubjectResponse> getSubjects(
+            @PathVariable(value = "lect_uid") UUID uid,
+            @PathVariable(value = "period") String period
+    ) {
+        return this.lecturerService.getSubjects(uid, period);
+    }
 }
