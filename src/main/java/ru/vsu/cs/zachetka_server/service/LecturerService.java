@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.exception.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
-import ru.vsu.cs.zachetka_server.model.dto.response.*;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.model.enumerate.Mark;
@@ -13,6 +12,7 @@ import ru.vsu.cs.zachetka_server.repository.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LecturerService {
@@ -163,5 +163,18 @@ public class LecturerService {
                     .build());
         }
         return result;
+    }
+
+    public LecturerFirstResponse getPeriods(UUID uid) {
+        LecturerEntity lecturerEntity = this.lecturerRepository.findByUserUid(uid)
+                .orElseThrow(LecturerNotFoundException::new);
+
+        List<SubjLectEntity> subjLectEntity = this.subjLectRepository.findAllByLectUid(lecturerEntity.getUid());
+
+        return LecturerFirstResponse.builder()
+                .fio(lecturerEntity.getFio())
+                .lectUid(lecturerEntity.getUid())
+                .periods(subjLectEntity.stream().map(SubjLectEntity::getPeriod).collect(Collectors.toSet()))
+                .build();
     }
 }

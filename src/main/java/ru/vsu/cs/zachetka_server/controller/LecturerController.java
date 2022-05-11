@@ -2,6 +2,7 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
+import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.MainLecturerInfoResponse;
@@ -26,11 +27,18 @@ public class LecturerController {
         this.lecturerService.addLecturer(fio, userUid);
     }
 
+//    @GetMapping("/lecturer/{user_lect_uid}")
+//    public MainLecturerInfoResponse getMainPage(
+//            @PathVariable("user_lect_uid") UUID uid
+//    ) {
+//        return this.lecturerService.getData(uid);
+//    }
+
     @GetMapping("/lecturer/{user_lect_uid}")
-    public MainLecturerInfoResponse getMainPage(
+    public LecturerFirstResponse getMainPage(
             @PathVariable("user_lect_uid") UUID uid
     ) {
-        return this.lecturerService.getData(uid);
+        return this.lecturerService.getPeriods(uid);
     }
 
     @PutMapping("/lecturer/update/{sl_uid}")
@@ -40,4 +48,6 @@ public class LecturerController {
     ) {
         return this.lecturerService.updateGroupData(uid, updateGroupMarksRequests);
     }
+
+//    public
 }

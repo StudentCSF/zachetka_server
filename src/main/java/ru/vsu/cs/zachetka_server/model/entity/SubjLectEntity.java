@@ -3,11 +3,9 @@ package ru.vsu.cs.zachetka_server.model.entity;
 import java.util.UUID;
 
 import lombok.*;
+import ru.vsu.cs.zachetka_server.model.enumerate.EvalType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -32,5 +30,8 @@ public class SubjLectEntity {
     @Column(name = "period")
     private String period;
 
+    @Column(name = "eval_type")
+    @Enumerated(EnumType.STRING)
+    private EvalType evalType;
 
 }

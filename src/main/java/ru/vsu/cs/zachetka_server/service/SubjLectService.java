@@ -43,6 +43,7 @@ public class SubjLectService {
                         .lectUid(subjLectRequest.getLectUid())
                         .subjUid(subjLectRequest.getSubjUid())
                         .uid(UUID.randomUUID())
+                        .evalType(subjLectRequest.getEvalType())
                         .build()
         );
     }
