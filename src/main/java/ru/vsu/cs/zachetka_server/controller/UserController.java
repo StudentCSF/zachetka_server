@@ -13,6 +13,7 @@ import ru.vsu.cs.zachetka_server.service.UserService;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -30,8 +31,8 @@ public class UserController {
     }
 
     @PostMapping("/user/register")
-    public void registerUser(@RequestBody AddUserRequest addUserRequest) {
-        this.userService.addUser(addUserRequest);
+    public UUID registerUser(@RequestBody AddUserRequest addUserRequest) {
+        return this.userService.addUser(addUserRequest);
     }
 
     @PostMapping("/user/auth")

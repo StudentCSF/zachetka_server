@@ -1,11 +1,11 @@
 package ru.vsu.cs.zachetka_server.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddStudentRequest;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.MainStudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.StudentInfoResponse;
@@ -28,39 +28,29 @@ public class StudentService {
 
     private final LecturerRepository lecturerRepository;
 
+    private final StudentGroupRepository studentGroupRepository;
+
+    private final UserService userService;
+
     private final BaseRequestValidationComponent baseRequestValidationComponent;
 
-    private final UserRepository userRepository;
-
-    private final BCryptPasswordEncoder encoder;
-
     @Autowired
-    public StudentService(StudentRepository studentRepository, MarkRepository markRepository, SubjLectRepository subjLectRepository, SubjectRepository subjectRepository, LecturerRepository lecturerRepository, BaseRequestValidationComponent baseRequestValidationComponent, UserRepository userRepository, BCryptPasswordEncoder encoder) {
+    public StudentService(StudentRepository studentRepository,
+                          MarkRepository markRepository,
+                          SubjLectRepository subjLectRepository,
+                          SubjectRepository subjectRepository,
+                          LecturerRepository lecturerRepository,
+                          StudentGroupRepository studentGroupRepository,
+                          UserService userService,
+                          BaseRequestValidationComponent baseRequestValidationComponent) {
         this.studentRepository = studentRepository;
         this.markRepository = markRepository;
         this.subjLectRepository = subjLectRepository;
         this.subjectRepository = subjectRepository;
         this.lecturerRepository = lecturerRepository;
+        this.studentGroupRepository = studentGroupRepository;
+        this.userService = userService;
         this.baseRequestValidationComponent = baseRequestValidationComponent;
-        this.userRepository = userRepository;
-        this.encoder = encoder;
-    }
-
-    public void addStudent(StudentRequest studentRequest, UUID userUid) {
-        if (!this.baseRequestValidationComponent.isValid(studentRequest) || userUid == null) {
-            throw new RequestNotValidException();
-        }
-        if (this.studentRepository.findByUserUid(userUid).isPresent()) {
-            throw new StudentAlreadyExistsException();
-        }
-        this.studentRepository.save(
-                StudentEntity.builder()
-                        .course(studentRequest.getCourse())
-                        .fio(studentRequest.getFio())
-                        .group(studentRequest.getGroup())
-                        .uid(UUID.randomUUID())
-                        .userUid(userUid).build()
-        );
     }
 
     public MainStudentInfoResponse getInfo(UUID userUid) {
@@ -105,32 +95,30 @@ public class StudentService {
     }
 
     public void addStudent(AddStudentRequest addStudentRequest) {
+        UUID newUserUid = this.userService.addUser(AddUserRequest.builder()
+                .role(UserRole.STUDENT)
+                .password(addStudentRequest.getPassword())
+                .login(addStudentRequest.getLogin())
+                .build());
+
         if (!this.baseRequestValidationComponent.isValid(addStudentRequest)) {
             throw new RequestNotValidException();
         }
 
-        String login = addStudentRequest.getLogin();
-
-        if (this.userRepository.findByLogin(login).isPresent()) {
-            throw new UserAlreadyExistsException();
-        }
-
-        UUID newUserUid = UUID.randomUUID();
-        this.userRepository.save(UserEntity.builder()
-                .uid(newUserUid)
-                .role(UserRole.STUDENT)
-                .password(this.encoder.encode(addStudentRequest.getPassword()))
-                .login(login)
-                .build()
-        );
+        UUID newStudUid = UUID.randomUUID();
 
         this.studentRepository.save(StudentEntity.builder()
                 .userUid(newUserUid)
-                .uid(UUID.randomUUID())
-                .group(addStudentRequest.getGroup())
+                .uid(newStudUid)
                 .fio(addStudentRequest.getFio())
-                .course(addStudentRequest.getCourse())
                 .build()
         );
+
+        this.studentGroupRepository.save(StudentGroupEntity.builder()
+                .group(addStudentRequest.getGroup())
+                .semester(addStudentRequest.getSemester())
+                .uid(UUID.randomUUID())
+                .studUid(newStudUid)
+                .build());
     }
 }

@@ -25,9 +25,9 @@ public class StudentEntity {
     @Column(name = "fio")
     private String fio;
 
-    @Column(name = "course")
-    private Byte course;
-
-    @Column(name = "group_number")
-    private Float group;
+//    @Column(name = "course")
+//    private Byte course;
+//
+//    @Column(name = "group_number")
+//    private Float group;
 }

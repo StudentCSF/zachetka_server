@@ -3,10 +3,13 @@ package ru.vsu.cs.zachetka_server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.exception.*;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddLecturerRequest;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.*;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.model.enumerate.Mark;
+import ru.vsu.cs.zachetka_server.model.enumerate.UserRole;
 import ru.vsu.cs.zachetka_server.repository.*;
 
 import java.time.LocalDate;
@@ -27,17 +30,26 @@ public class LecturerService {
 
     private final StudentRepository studentRepository;
 
+    private final StudentGroupRepository studentGroupRepository;
+
+
+    private final UserService userService;
+
     @Autowired
     public LecturerService(LecturerRepository lecturerRepository,
                            SubjLectRepository subjLectRepository,
                            SubjectRepository subjectRepository,
                            MarkRepository markRepository,
-                           StudentRepository studentRepository) {
+                           StudentRepository studentRepository,
+                           StudentGroupRepository studentGroupRepository,
+                           UserService userService) {
         this.lecturerRepository = lecturerRepository;
         this.subjLectRepository = subjLectRepository;
         this.subjectRepository = subjectRepository;
         this.markRepository = markRepository;
         this.studentRepository = studentRepository;
+        this.studentGroupRepository = studentGroupRepository;
+        this.userService = userService;
     }
 
     public void addLecturer(String lecturerFio, UUID userUid) {
@@ -123,9 +135,20 @@ public class LecturerService {
         for (MarkEntity mark : markEntities) {
             student = this.studentRepository.findById(mark.getStudUid())
                     .orElseThrow(StudentNotFoundException::new);
-            if (!result.containsKey(student.getGroup()))
-                result.put(student.getGroup(), new ArrayList<>());
-            result.get(student.getGroup()).add(LecturerInfoResponse.builder()
+
+            SubjectEntity subjectEntity = this.subjectRepository.findById(
+                            this.subjLectRepository.findById(mark.getSlUid())
+                                    .orElseThrow(SubjLectNotFoundException::new)
+                                    .getSubjUid())
+                    .orElseThrow(SubjectNotFoundException::new);
+
+            Float group = this.studentGroupRepository.findByStudUidAndSemester(student.getUid(), subjectEntity.getSemester())
+                    .orElseThrow(StudentGroupNotFoundException::new)
+                    .getGroup();
+
+            if (!result.containsKey(group))
+                result.put(group, new ArrayList<>());
+            result.get(group).add(LecturerInfoResponse.builder()
                     .studUid(student.getUid())
                     .mark(mark.getMark())
                     .studFio(student.getFio())
@@ -140,5 +163,24 @@ public class LecturerService {
         return LecturerTableResponse.builder()
                 .table(result)
                 .build();
+    }
+
+    public void addLecturer(AddLecturerRequest addLecturerRequest) {
+        UUID newUserUid = this.userService.addUser(AddUserRequest.builder()
+                .role(UserRole.LECTURER)
+                .password(addLecturerRequest.getPassword())
+                .login(addLecturerRequest.getLogin())
+                .build());
+
+        if (addLecturerRequest.getFio() == null || addLecturerRequest.getFio().length() == 0) {
+            throw new RequestNotValidException();
+        }
+
+        this.lecturerRepository.save(LecturerEntity.builder()
+                .userUid(newUserUid)
+                .uid(UUID.randomUUID())
+                .fio(addLecturerRequest.getFio())
+                .build()
+        );
     }
 }

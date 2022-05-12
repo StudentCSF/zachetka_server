@@ -31,7 +31,7 @@ public class UserService {
         this.encoder = bCryptPasswordEncoder;
     }
 
-    public void addUser(AddUserRequest addUserRequest) {
+    public UUID addUser(AddUserRequest addUserRequest) {
         if (!this.validationComponent.isValid(addUserRequest)) {
             throw new RequestNotValidException();
         }
@@ -39,14 +39,18 @@ public class UserService {
             throw new UserAlreadyExistsException();
         }
 
+        UUID userUid = UUID.randomUUID();
+
         this.userRepository.save(
                 UserEntity.builder()
                         .login(addUserRequest.getLogin())
                         .password(this.encoder.encode(addUserRequest.getPassword()))
                         .role(addUserRequest.getRole())
-                        .uid(UUID.randomUUID())
+                        .uid(userUid)
                         .build()
         );
+
+        return userUid;
     }
 
     public UserEntity authUser(AuthUserRequest authUserRequest) {

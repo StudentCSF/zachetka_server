@@ -4,20 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class AddStudentRequest implements IValidated {
+public class AddLecturerRequest implements IValidated {
 
     @NotBlank
     private String fio;
-
-    @NotNull
-    private Byte semester;
-
-    @NotNull
-    private Float group;
 
     @NotBlank
     private String login;

@@ -1,6 +1,7 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddLecturerRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
@@ -53,5 +54,10 @@ public class LecturerController {
     @GetMapping("/lecturer/groups/{sl_uid}")
     public LecturerTableResponse getTables(@PathVariable(value = "sl_uid") UUID uid) {
         return this.lecturerService.getTables(uid);
+    }
+
+    @PostMapping("/lecturer")
+    public void addLecturer(@RequestBody AddLecturerRequest addLecturerRequest) {
+        this.lecturerService.addLecturer(addLecturerRequest);
     }
 }
