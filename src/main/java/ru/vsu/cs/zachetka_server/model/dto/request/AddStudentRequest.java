@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -12,10 +13,10 @@ public class AddStudentRequest implements IValidated {
     @NotBlank
     private String fio;
 
-    @NotBlank
+    @NotNull
     private Byte course;
 
-    @NotBlank
+    @NotNull
     private Float group;
 
     @NotBlank
