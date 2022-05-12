@@ -1,13 +1,16 @@
 package ru.vsu.cs.zachetka_server.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddStudentRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.MainStudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.StudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
+import ru.vsu.cs.zachetka_server.model.enumerate.UserRole;
 import ru.vsu.cs.zachetka_server.repository.*;
 
 import java.util.*;
@@ -27,14 +30,20 @@ public class StudentService {
 
     private final BaseRequestValidationComponent baseRequestValidationComponent;
 
+    private final UserRepository userRepository;
+
+    private final BCryptPasswordEncoder encoder;
+
     @Autowired
-    public StudentService(StudentRepository studentRepository, MarkRepository markRepository, SubjLectRepository subjLectRepository, SubjectRepository subjectRepository, LecturerRepository lecturerRepository, BaseRequestValidationComponent baseRequestValidationComponent) {
+    public StudentService(StudentRepository studentRepository, MarkRepository markRepository, SubjLectRepository subjLectRepository, SubjectRepository subjectRepository, LecturerRepository lecturerRepository, BaseRequestValidationComponent baseRequestValidationComponent, UserRepository userRepository, BCryptPasswordEncoder encoder) {
         this.studentRepository = studentRepository;
         this.markRepository = markRepository;
         this.subjLectRepository = subjLectRepository;
         this.subjectRepository = subjectRepository;
         this.lecturerRepository = lecturerRepository;
         this.baseRequestValidationComponent = baseRequestValidationComponent;
+        this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     public void addStudent(StudentRequest studentRequest, UUID userUid) {
@@ -93,5 +102,35 @@ public class StudentService {
                 .info(result)
                 .fio(studentEntity.getFio())
                 .build();
+    }
+
+    public void addStudent(AddStudentRequest addStudentRequest) {
+        if (!this.baseRequestValidationComponent.isValid(addStudentRequest)) {
+            throw new RequestNotValidException();
+        }
+
+        String login = addStudentRequest.getLogin();
+
+        if (this.userRepository.findByLogin(login).isPresent()) {
+            throw new UserAlreadyExistsException();
+        }
+
+        UUID newUserUid = UUID.randomUUID();
+        this.userRepository.save(UserEntity.builder()
+                .uid(newUserUid)
+                .role(UserRole.STUDENT)
+                .password(this.encoder.encode(addStudentRequest.getPassword()))
+                .login(login)
+                .build()
+        );
+
+        this.studentRepository.save(StudentEntity.builder()
+                .userUid(newUserUid)
+                .uid(UUID.randomUUID())
+                .group(addStudentRequest.getGroup())
+                .fio(addStudentRequest.getFio())
+                .course(addStudentRequest.getCourse())
+                .build()
+        );
     }
 }
