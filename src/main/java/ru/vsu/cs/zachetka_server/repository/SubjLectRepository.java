@@ -3,6 +3,7 @@ package ru.vsu.cs.zachetka_server.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.vsu.cs.zachetka_server.model.entity.SubjLectEntity;
+import ru.vsu.cs.zachetka_server.model.enumerate.EvalType;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,6 @@ public interface SubjLectRepository extends JpaRepository<SubjLectEntity, UUID> 
     List<SubjLectEntity> findAllByLectUid(UUID uid);
 
     List<SubjLectEntity> findAllByLectUidAndPeriod(UUID uid, String period);
+
+    Optional<SubjLectEntity> findByLectUidAndSubjUidAndEvalTypeAndPeriod(UUID lectUid, UUID subjUid, EvalType et, String period);
 }

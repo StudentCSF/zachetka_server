@@ -81,6 +81,16 @@ public class SubjLectService {
         LecturerEntity lecturerEntity = this.lecturerRepository.findByFio(addSubjLectRequest.getLectFio())
                 .orElseThrow(LecturerNotFoundException::new);
 
+        if (this.subjLectRepository.findByLectUidAndSubjUidAndEvalTypeAndPeriod(
+                lecturerEntity.getUid(),
+                subjectEntity.getUid(),
+                addSubjLectRequest.getEvalType(),
+                addSubjLectRequest.getPeriod()
+        ).isPresent()
+        ) {
+            throw new SubjLectAlreadyExistsException();
+        }
+
         this.subjLectRepository.save(SubjLectEntity.builder()
                 .evalType(addSubjLectRequest.getEvalType())
                 .uid(UUID.randomUUID())
