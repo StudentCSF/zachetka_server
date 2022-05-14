@@ -9,6 +9,8 @@ import ru.vsu.cs.zachetka_server.exception.SubjLectAlreadyExistsException;
 import ru.vsu.cs.zachetka_server.exception.SubjectNotFoundException;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddSubjLectRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.SubjLectRequest;
+import ru.vsu.cs.zachetka_server.model.dto.response.LecturersAndSubjectsResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.SubjectResponse;
 import ru.vsu.cs.zachetka_server.model.entity.LecturerEntity;
 import ru.vsu.cs.zachetka_server.model.entity.SubjLectEntity;
 import ru.vsu.cs.zachetka_server.model.entity.SubjectEntity;
@@ -17,6 +19,7 @@ import ru.vsu.cs.zachetka_server.repository.SubjLectRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjLectService {
@@ -84,5 +87,24 @@ public class SubjLectService {
                 .period(addSubjLectRequest.getPeriod())
                 .build()
         );
+    }
+
+    public LecturersAndSubjectsResponse getSubjectsAndLecturers() {
+        return LecturersAndSubjectsResponse.builder()
+                .lecturers(
+                        this.lecturerRepository.findAll().stream()
+                                .map(LecturerEntity::getFio)
+                                .collect(Collectors.toList())
+                )
+                .subjects(
+                        this.subjectRepository.findAll().stream()
+                                .map(x -> SubjectResponse.builder()
+                                        .name(x.getName())
+                                        .semester(x.getSemester())
+                                        .build()
+                                )
+                                .collect(Collectors.toList())
+                )
+                .build();
     }
 }
