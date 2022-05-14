@@ -18,7 +18,7 @@ public class SubjLectController {
         this.subjLectService = subjLectService;
     }
 
-    @PostMapping("/subjlect/add")
+    @PostMapping("/subjlect")
     public void addSubjLect(@RequestBody AddSubjLectRequest addSubjLectRequest) {
         this.subjLectService.addSubjLect(addSubjLectRequest);
     }
