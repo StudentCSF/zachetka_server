@@ -126,7 +126,7 @@ public class LecturerService {
                     .studUid(student.getUid())
                     .mark(mark.getMark())
                     .studFio(student.getFio())
-                    .examDate(mark.getDate().toString())
+                    .examDate(mark.getDate() == null ? null : mark.getDate().toString())
                     .build()
             );
         }
