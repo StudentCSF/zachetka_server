@@ -35,14 +35,6 @@ public class LecturerController {
         return this.lecturerService.getPeriods(uid);
     }
 
-    @PutMapping("/lecturer/update/{sl_uid}")
-    public List<LecturerInfoResponse> updateMarks(
-        @PathVariable("sl_uid") UUID uid,
-        @RequestBody List<UpdateGroupMarksRequest> updateGroupMarksRequests
-    ) {
-        return this.lecturerService.updateGroupData(uid, updateGroupMarksRequests);
-    }
-
     @GetMapping("/lecturer/subjects/{lect_uid}/{period}")
     public List<LecturerKeySubjectResponse> getSubjects(
             @PathVariable(value = "lect_uid") UUID uid,

@@ -18,9 +18,7 @@ import ru.vsu.cs.zachetka_server.repository.LecturerRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjLectRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,5 +120,14 @@ public class SubjLectService {
                                 .collect(Collectors.toList())
                 )
                 .build();
+    }
+
+    public SortedSet<String> getPeriods() {
+        return this.subjLectRepository.findAll()
+                .stream()
+                .map(SubjLectEntity::getPeriod)
+                .collect(Collectors.toCollection(
+                        () -> new TreeSet<>(Comparator.comparing(String::valueOf).reversed()))
+                );
     }
 }
