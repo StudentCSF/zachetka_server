@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.RequestNotValidException;
+import ru.vsu.cs.zachetka_server.exception.SubjectAlreadyExistsException;
 import ru.vsu.cs.zachetka_server.model.dto.request.SubjectRequest;
 import ru.vsu.cs.zachetka_server.model.entity.SubjectEntity;
 import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
@@ -26,6 +27,14 @@ public class SubjectService {
     public void addSubject(SubjectRequest subjectRequest) {
         if (!this.baseRequestValidationComponent.isValid(subjectRequest)) {
             throw new RequestNotValidException();
+        }
+
+        if (this.subjectRepository.findByNameAndSemester(
+                        subjectRequest.getName(),
+                        subjectRequest.getSemester())
+                .isPresent()
+        ) {
+            throw new SubjectAlreadyExistsException();
         }
 
         this.subjectRepository.save(
