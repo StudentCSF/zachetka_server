@@ -68,7 +68,7 @@ public class MarkService {
             MarkEntity markEntity = this.markRepository.findByStudUidAndSlUid(curr.getStudUid(), uid)
                     .orElseThrow(MarkRawNotFoundException::new);
             markEntity.setMark(curr.getMark() == Mark.NONE ? null : curr.getMark());
-            markEntity.setDate(curr.getDate().length() == 0 ?
+            markEntity.setDate(curr.getDate().length() != 10 ?
                     null :
                     LocalDate.parse(curr.getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy")));
             this.markRepository.save(markEntity);
