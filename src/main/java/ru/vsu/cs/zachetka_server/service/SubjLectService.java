@@ -18,6 +18,8 @@ import ru.vsu.cs.zachetka_server.repository.LecturerRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjLectRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -90,10 +92,12 @@ public class SubjLectService {
     }
 
     public LecturersAndSubjectsResponse getSubjectsAndLecturers() {
+
         return LecturersAndSubjectsResponse.builder()
                 .lecturers(
                         this.lecturerRepository.findAll().stream()
                                 .map(LecturerEntity::getFio)
+                                .sorted(String::compareTo)
                                 .collect(Collectors.toList())
                 )
                 .subjects(
@@ -103,6 +107,8 @@ public class SubjLectService {
                                         .semester(x.getSemester())
                                         .build()
                                 )
+                                .sorted(Comparator.comparing(SubjectResponse::getName)
+                                        .thenComparing(SubjectResponse::getSemester))
                                 .collect(Collectors.toList())
                 )
                 .build();
