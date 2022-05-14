@@ -144,10 +144,10 @@ public class MarkService {
                         .build())
                 .collect(Collectors.toList());
 
-        List<Float> groups = this.studentGroupRepository.findAllBySemester(semester)
+        Set<Float> groups = this.studentGroupRepository.findAllBySemester(semester)
                 .stream()
                 .map(StudentGroupEntity::getGroup)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         return SubjLectsAndGroupsResponse.builder()
                 .groups(groups)

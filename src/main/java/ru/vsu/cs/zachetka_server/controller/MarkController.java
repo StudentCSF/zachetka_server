@@ -36,7 +36,8 @@ public class MarkController {
     @GetMapping("/mark/{period}/{semester}")
     public SubjLectsAndGroupsResponse getSubjLectsAndGroups(
             @PathVariable("period") String period,
-            @PathVariable(value = "semester") Byte semester) {
+            @PathVariable(value = "semester") Byte semester
+    ) {
         return this.markService.getLists(period, semester);
     }
 }

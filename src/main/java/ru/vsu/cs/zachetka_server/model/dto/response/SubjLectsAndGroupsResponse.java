@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -11,5 +12,5 @@ public class SubjLectsAndGroupsResponse {
 
     private List<SubjLectResponse> subjLects;
 
-    private List<Float> groups;
+    private Set<Float> groups;
 }
