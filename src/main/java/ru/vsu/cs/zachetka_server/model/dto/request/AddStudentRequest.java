@@ -19,9 +19,6 @@ public class AddStudentRequest implements IValidated {
     @NotNull
     private Byte initSem;
 
-    @NotNull
-    private Float group;
-
     @NotBlank
     private String login;
 
