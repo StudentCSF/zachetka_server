@@ -62,7 +62,7 @@ public class LecturerService {
 
         this.lecturerRepository.save(
                 LecturerEntity.builder()
-                        .fio(lecturerFio)
+                        .fio(lecturerFio.trim())
                         .uid(UUID.randomUUID())
                         .userUid(userUid)
                         .build()

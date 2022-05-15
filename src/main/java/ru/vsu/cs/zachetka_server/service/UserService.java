@@ -43,8 +43,8 @@ public class UserService {
 
         this.userRepository.save(
                 UserEntity.builder()
-                        .login(addUserRequest.getLogin())
-                        .password(this.encoder.encode(addUserRequest.getPassword()))
+                        .login(addUserRequest.getLogin().trim())
+                        .password(this.encoder.encode(addUserRequest.getPassword().trim()))
                         .role(addUserRequest.getRole())
                         .uid(userUid)
                         .build()

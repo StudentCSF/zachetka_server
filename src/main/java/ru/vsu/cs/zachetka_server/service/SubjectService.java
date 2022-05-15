@@ -40,7 +40,7 @@ public class SubjectService {
         this.subjectRepository.save(
                 SubjectEntity.builder()
                         .semester(subjectRequest.getSemester())
-                        .name(subjectRequest.getName())
+                        .name(subjectRequest.getName().trim())
                         .uid(UUID.randomUUID())
                         .build()
         );

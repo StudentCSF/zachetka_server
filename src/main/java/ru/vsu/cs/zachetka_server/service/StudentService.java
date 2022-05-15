@@ -109,7 +109,7 @@ public class StudentService {
         }
 
         if (this.studentRepository.findByFioAndInitYearAndInitSem(
-                        addStudentRequest.getFio(),
+                        addStudentRequest.getFio().trim(),
                         addStudentRequest.getInitYear(),
                         addStudentRequest.getInitSem())
                 .isPresent()
@@ -120,7 +120,7 @@ public class StudentService {
         this.studentRepository.save(StudentEntity.builder()
                 .userUid(newUserUid)
                 .uid(UUID.randomUUID())
-                .fio(addStudentRequest.getFio())
+                .fio(addStudentRequest.getFio().trim())
                 .initYear(addStudentRequest.getInitYear())
                 .initSem(addStudentRequest.getInitSem())
                 .build()

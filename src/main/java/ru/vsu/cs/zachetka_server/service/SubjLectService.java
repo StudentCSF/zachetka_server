@@ -94,7 +94,7 @@ public class SubjLectService {
                 .uid(UUID.randomUUID())
                 .subjUid(subjectEntity.getUid())
                 .lectUid(lecturerEntity.getUid())
-                .period(addSubjLectRequest.getPeriod())
+                .period(addSubjLectRequest.getPeriod().trim())
                 .build()
         );
     }
