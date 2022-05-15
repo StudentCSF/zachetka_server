@@ -19,13 +19,6 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-//    @PostMapping("/student/{user_uid}")
-//    public void addStudent(@RequestBody StudentRequest studentRequest,
-//                           @PathVariable(value = "user_uid") UUID userUid
-//    ) {
-//        this.studentService.addStudent(studentRequest, userUid);
-//    }
-
     @GetMapping("/student/{user_uid}")
     public MainStudentInfoResponse main(@PathVariable(value = "user_uid") UUID userUid) {
         return this.studentService.getInfo(userUid);

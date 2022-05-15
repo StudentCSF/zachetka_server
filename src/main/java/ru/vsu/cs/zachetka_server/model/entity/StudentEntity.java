@@ -31,9 +31,4 @@ public class StudentEntity {
     @Column(name = "init_sem")
     private Byte initSem;
 
-//    @Column(name = "course")
-//    private Byte course;
-//
-//    @Column(name = "group_number")
-//    private Float group;
 }
