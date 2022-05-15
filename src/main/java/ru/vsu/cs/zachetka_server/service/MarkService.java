@@ -68,12 +68,12 @@ public class MarkService {
             MarkEntity markEntity = this.markRepository.findByStudUidAndSlUid(curr.getStudUid(), uid)
                     .orElseThrow(MarkRawNotFoundException::new);
             markEntity.setMark(curr.getMark() == Mark.NONE ? null : curr.getMark());
-            markEntity.setDate(curr.getDate() == null || curr.getDate().length() != 10 ?
+            markEntity.setDate(curr.getDate() == null ?
                     null :
                     LocalDate.parse(curr.getDate(), DateTimeFormatter.ofPattern("dd.MM.yyyy")));
             this.markRepository.save(markEntity);
             result.add(LecturerInfoResponse.builder()
-                    .examDate(markEntity.getDate().toString())
+                    .examDate(markEntity.getDate() == null ? null : markEntity.getDate().toString())
                     .studFio(this.studentRepository.findById(markEntity.getStudUid())
                             .orElseThrow(StudentNotFoundException::new)
                             .getFio())
