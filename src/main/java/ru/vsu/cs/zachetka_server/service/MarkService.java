@@ -195,12 +195,6 @@ public class MarkService {
                 addMarkRawsRequest.getGroup(),
                 semester);
 
-//        Map<UUID, StudentGroupEntity> map = new HashMap<>();
-//
-//        for (StudentGroupEntity studentGroupEntity : studentGroupEntities) {
-//            map.put(studentGroupEntity.getStudUid(), studentGroupEntity);
-//        }
-//
         List<StudentEntity> studentEntities = this.studentRepository.findAllById(studentGroupEntities.stream()
                 .map(StudentGroupEntity::getStudUid)
                 .collect(Collectors.toSet()));
@@ -220,15 +214,6 @@ public class MarkService {
                 addMarkRawsRequest.getSlUid()
         );
 
-//        Set<Float> markEntities = this.studentGroupRepository.findAllByStudUidIn(this.markRepository.findAllBySlUid(addMarkRawsRequest.getSlUid())
-//                        .stream()
-//                        .map(MarkEntity::getStudUid)
-//                        .collect(Collectors.toList()))
-//                .stream()
-//                .map(StudentGroupEntity::getGroup)
-//                .filter(x -> !x.equals(addMarkRawsRequest.getGroup()))
-//                .collect(Collectors.toSet());
-//
         if (!markEntities.isEmpty()) {
             throw new MarkAlreadyExistsException();
         }
@@ -243,18 +228,6 @@ public class MarkService {
                         .studUid(x)
                         .build())
                 .collect(Collectors.toList());
-
-
-//        List<MarkEntity> add = this.studentGroupRepository.findAllByGroup(addMarkRawsRequest.getGroup())
-//                .stream()
-//                .map(x -> MarkEntity.builder()
-//                        .uid(UUID.randomUUID())
-//                        .slUid(addMarkRawsRequest.getSlUid())
-//                        .date(null)
-//                        .mark(null)
-//                        .studUid(x.getStudUid())
-//                        .build())
-//                .collect(Collectors.toList());
 
         this.markRepository.saveAll(add);
     }
