@@ -98,7 +98,6 @@ public class LecturerService {
                     .build()
             );
         }
-
         return result;
     }
 

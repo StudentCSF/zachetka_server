@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.vsu.cs.zachetka_server.model.entity.SubjLectEntity;
 import ru.vsu.cs.zachetka_server.model.enumerate.EvalType;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +16,7 @@ public interface SubjLectRepository extends JpaRepository<SubjLectEntity, UUID> 
 
     List<SubjLectEntity> findAllByLectUid(UUID uid);
 
-    List<SubjLectEntity> findAllBySubjUidIn(List<UUID> uids);
+    List<SubjLectEntity> findAllBySubjUidInAndPeriodEquals(List<UUID> uids, String period);
 
     List<SubjLectEntity> findAllByLectUidAndPeriod(UUID uid, String period);
 

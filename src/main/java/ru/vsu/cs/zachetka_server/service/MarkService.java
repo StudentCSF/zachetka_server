@@ -115,9 +115,10 @@ public class MarkService {
 
         List<SubjectEntity> subjectEntities = this.subjectRepository.findAllBySemester(semester);
 
-        List<SubjLectEntity> subjLectEntities = this.subjLectRepository.findAllBySubjUidIn(subjectEntities.stream()
-                .map(SubjectEntity::getUid)
-                .collect(Collectors.toList()));
+        List<SubjLectEntity> subjLectEntities = this.subjLectRepository.findAllBySubjUidInAndPeriodEquals(subjectEntities.stream()
+                        .map(SubjectEntity::getUid)
+                        .collect(Collectors.toList()),
+                period);
 
         Map<UUID, String> lecturerEntities = this.lecturerRepository.findAllByUidIn(
                         subjLectEntities.stream()
@@ -144,10 +145,31 @@ public class MarkService {
                         .build())
                 .collect(Collectors.toList());
 
-        Set<Float> groups = this.studentGroupRepository.findAllBySemester(semester)
+
+        List<StudentGroupEntity> studGroups = this.studentGroupRepository.findAllBySemester(semester);
+
+        Map<UUID, StudentGroupEntity> map = new HashMap<>();
+
+        for (StudentGroupEntity studentGroupEntity : studGroups) {
+            map.put(studentGroupEntity.getStudUid(), studentGroupEntity);
+        }
+
+        int year = Integer.parseInt(period.split("-")[(semester + 1) % 2]);
+
+        List<StudentEntity> studentEntities = this.studentRepository.findAllById(studGroups
                 .stream()
-                .map(StudentGroupEntity::getGroup)
-                .collect(Collectors.toSet());
+                .map(StudentGroupEntity::getStudUid)
+                .collect(Collectors.toList()));
+
+        Set<Float> groups = new TreeSet<>(Float::compareTo);
+
+        for (StudentEntity sge : studentEntities) {
+            int is = sge.getInitSem().intValue();
+            int diff = semester - is;
+            if (semester % 2 != is % 2) diff++;
+            if (diff / 2 + sge.getInitYear() == year)
+                groups.add(map.get(sge.getUid()).getGroup());
+        }
 
         return SubjLectsAndGroupsResponse.builder()
                 .groups(groups)

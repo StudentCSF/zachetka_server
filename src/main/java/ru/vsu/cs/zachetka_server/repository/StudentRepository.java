@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
 
     Optional<StudentEntity> findByUserUid(UUID userUid);
+
+    Optional<StudentEntity> findByFioAndInitYearAndInitSem(String fio, Integer year, Byte sem);
 }

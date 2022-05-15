@@ -25,6 +25,12 @@ public class StudentEntity {
     @Column(name = "fio")
     private String fio;
 
+    @Column(name = "init_year")
+    private Integer initYear;
+
+    @Column(name = "init_sem")
+    private Byte initSem;
+
 //    @Column(name = "course")
 //    private Byte course;
 //

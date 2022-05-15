@@ -14,7 +14,10 @@ public class AddStudentRequest implements IValidated {
     private String fio;
 
     @NotNull
-    private Byte semester;
+    private Integer initYear;
+
+    @NotNull
+    private Byte initSem;
 
     @NotNull
     private Float group;

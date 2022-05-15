@@ -105,20 +105,22 @@ public class StudentService {
             throw new RequestNotValidException();
         }
 
-        UUID newStudUid = UUID.randomUUID();
+        if (this.studentRepository.findByFioAndInitYearAndInitSem(
+                        addStudentRequest.getFio(),
+                        addStudentRequest.getInitYear(),
+                        addStudentRequest.getInitSem())
+                .isPresent()
+        ) {
+            throw new StudentAlreadyExistsException();
+        }
 
         this.studentRepository.save(StudentEntity.builder()
                 .userUid(newUserUid)
-                .uid(newStudUid)
+                .uid(UUID.randomUUID())
                 .fio(addStudentRequest.getFio())
+                .initYear(addStudentRequest.getInitYear())
+                .initSem(addStudentRequest.getInitSem())
                 .build()
         );
-
-        this.studentGroupRepository.save(StudentGroupEntity.builder()
-                .group(addStudentRequest.getGroup())
-                .semester(addStudentRequest.getSemester())
-                .uid(UUID.randomUUID())
-                .studUid(newStudUid)
-                .build());
     }
 }
