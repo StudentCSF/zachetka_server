@@ -65,6 +65,9 @@ public class StudentService {
         Map<Byte, List<StudentInfoResponse>> result = new TreeMap<>();
 
         for (MarkEntity markEntity : allMarks) {
+
+            if (markEntity.getDate() == null || markEntity.getMark() == null) continue;
+
             SubjLectEntity subjLectEntity = this.subjLectRepository.findById(markEntity.getSlUid())
                     .orElseThrow(SubjLectNotFoundException::new);
 
