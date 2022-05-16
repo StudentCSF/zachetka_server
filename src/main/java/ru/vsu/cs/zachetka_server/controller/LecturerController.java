@@ -10,6 +10,7 @@ import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableRespon
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -44,7 +45,7 @@ public class LecturerController {
     }
 
     @GetMapping("/lecturer/groups/{sl_uid}")
-    public List<Float> getGroups(@PathVariable(value = "sl_uid") UUID uid) {
+    public Set<Float> getGroups(@PathVariable(value = "sl_uid") UUID uid) {
         return this.lecturerService.getGroups(uid);
     }
 

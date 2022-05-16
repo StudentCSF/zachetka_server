@@ -158,7 +158,7 @@ public class LecturerService {
         );
     }
 
-    public List<Float> getGroups(UUID uid) {
+    public Set<Float> getGroups(UUID uid) {
 
         SubjLectEntity subjLectEntity = this.subjLectRepository.findById(uid)
                 .orElseThrow(SubjLectNotFoundException::new);
@@ -195,7 +195,7 @@ public class LecturerService {
                         semester)
                 .stream()
                 .map(StudentGroupEntity::getGroup)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public List<LecturerInfoResponse> getTable(UUID uid, Float g) {
