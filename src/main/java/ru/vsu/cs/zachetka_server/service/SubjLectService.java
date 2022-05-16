@@ -8,7 +8,6 @@ import ru.vsu.cs.zachetka_server.exception.RequestNotValidException;
 import ru.vsu.cs.zachetka_server.exception.SubjLectAlreadyExistsException;
 import ru.vsu.cs.zachetka_server.exception.SubjectNotFoundException;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddSubjLectRequest;
-import ru.vsu.cs.zachetka_server.model.dto.request.SubjLectRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.LecturersAndSubjectsResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjectResponse;
 import ru.vsu.cs.zachetka_server.model.entity.LecturerEntity;
@@ -18,7 +17,10 @@ import ru.vsu.cs.zachetka_server.repository.LecturerRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjLectRepository;
 import ru.vsu.cs.zachetka_server.repository.SubjectRepository;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,29 +43,6 @@ public class SubjLectService {
         this.subjectRepository = subjectRepository;
         this.lecturerRepository = lecturerRepository;
         this.baseRequestValidationComponent = baseRequestValidationComponent;
-    }
-
-    public void addSubjLect(SubjLectRequest subjLectRequest) {
-        if (!this.baseRequestValidationComponent.isValid(subjLectRequest)) {
-            throw new RequestNotValidException();
-        }
-
-        if (this.subjLectRepository.findByLectUidAndSubjUid(
-                        subjLectRequest.getLectUid(),
-                        subjLectRequest.getSubjUid())
-                .isPresent()
-        ) {
-            throw new SubjLectAlreadyExistsException();
-        }
-
-        this.subjLectRepository.save(
-                SubjLectEntity.builder()
-                        .lectUid(subjLectRequest.getLectUid())
-                        .subjUid(subjLectRequest.getSubjUid())
-                        .uid(UUID.randomUUID())
-                        .evalType(subjLectRequest.getEvalType())
-                        .build()
-        );
     }
 
     public void addSubjLect(AddSubjLectRequest addSubjLectRequest) {

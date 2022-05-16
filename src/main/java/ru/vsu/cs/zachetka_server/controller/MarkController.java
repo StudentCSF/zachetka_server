@@ -2,7 +2,6 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRawsRequest;
-import ru.vsu.cs.zachetka_server.model.dto.request.MarkRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectsAndGroupsResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;

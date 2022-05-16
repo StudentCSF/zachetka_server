@@ -2,11 +2,9 @@ package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddLecturerRequest;
-import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerKeySubjectResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableResponse;
 import ru.vsu.cs.zachetka_server.service.LecturerService;
 
 import java.util.List;

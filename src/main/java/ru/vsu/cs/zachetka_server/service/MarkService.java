@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRawsRequest;
-import ru.vsu.cs.zachetka_server.model.dto.request.MarkRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectsAndGroupsResponse;
@@ -79,30 +78,6 @@ public class MarkService {
                     .build());
         }
         return result;
-    }
-
-    public void addMark(MarkRequest markRequest) {
-        if (!this.baseRequestValidationComponent.isValid(markRequest)) {
-            throw new RequestNotValidException();
-        }
-
-        if (this.markRepository.findByStudUidAndSlUid(
-                        markRequest.getStudUid(),
-                        markRequest.getSlUid())
-                .isPresent()
-        ) {
-            throw new MarkAlreadyExistsException();
-        }
-
-        this.markRepository.save(
-                MarkEntity.builder()
-                        .studUid(markRequest.getStudUid())
-                        .mark(markRequest.getMark())
-                        .date(markRequest.getDate())
-                        .slUid(markRequest.getSlUid())
-                        .uid(UUID.randomUUID())
-                        .build()
-        );
     }
 
     public SubjLectsAndGroupsResponse getLists(String period, Byte semester) {

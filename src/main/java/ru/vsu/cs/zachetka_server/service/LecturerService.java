@@ -8,7 +8,6 @@ import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerFirstResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerKeySubjectResponse;
-import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerTableResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.model.enumerate.UserRole;
 import ru.vsu.cs.zachetka_server.repository.*;
@@ -78,7 +77,10 @@ public class LecturerService {
         return LecturerFirstResponse.builder()
                 .fio(lecturerEntity.getFio())
                 .lectUid(lecturerEntity.getUid())
-                .periods(subjLectEntity.stream().map(SubjLectEntity::getPeriod).collect(Collectors.toSet()))
+                .periods(subjLectEntity.stream()
+                        .map(SubjLectEntity::getPeriod)
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .build();
     }
 
@@ -100,44 +102,6 @@ public class LecturerService {
         }
         return result;
     }
-
-//    public LecturerTableResponse getTables(UUID uid) {
-//        List<MarkEntity> markEntities = this.markRepository.findAllBySlUid(uid);
-//        Map<Float, List<LecturerInfoResponse>> result = new TreeMap<>();
-//        StudentEntity student;
-//        for (MarkEntity mark : markEntities) {
-//            student = this.studentRepository.findById(mark.getStudUid())
-//                    .orElseThrow(StudentNotFoundException::new);
-//
-//            SubjectEntity subjectEntity = this.subjectRepository.findById(
-//                            this.subjLectRepository.findById(mark.getSlUid())
-//                                    .orElseThrow(SubjLectNotFoundException::new)
-//                                    .getSubjUid())
-//                    .orElseThrow(SubjectNotFoundException::new);
-//
-//            Float group = this.studentGroupRepository.findByStudUidAndSemester(student.getUid(), subjectEntity.getSemester())
-//                    .orElseThrow(StudentGroupNotFoundException::new)
-//                    .getGroup();
-//
-//            if (!result.containsKey(group))
-//                result.put(group, new ArrayList<>());
-//
-//            result.get(group).add(LecturerInfoResponse.builder()
-//                    .studUid(student.getUid())
-//                    .mark(mark.getMark())
-//                    .studFio(student.getFio())
-//                    .examDate(mark.getDate() == null ? null : mark.getDate().toString())
-//                    .build()
-//            );
-//        }
-//
-//        for (List<LecturerInfoResponse> l : result.values())
-//            l.sort(Comparator.comparing(LecturerInfoResponse::getStudFio));
-//
-//        return LecturerTableResponse.builder()
-//                .table(result)
-//                .build();
-//    }
 
     public void addLecturer(AddLecturerRequest addLecturerRequest) {
         UUID newUserUid = this.userService.addUser(AddUserRequest.builder()
