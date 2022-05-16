@@ -115,6 +115,9 @@ public class MarkService {
                         .subjName(subjects.get(x.getSubjUid()))
                         .slUid(x.getUid())
                         .build())
+                .sorted(Comparator.comparing(SubjLectResponse::getSubjName)
+                        .thenComparing(SubjLectResponse::getLectFio)
+                        .thenComparing(SubjLectResponse::getEvalType))
                 .collect(Collectors.toList());
 
 
