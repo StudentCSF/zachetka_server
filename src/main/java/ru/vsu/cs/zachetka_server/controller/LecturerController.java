@@ -44,8 +44,16 @@ public class LecturerController {
     }
 
     @GetMapping("/lecturer/groups/{sl_uid}")
-    public LecturerTableResponse getTables(@PathVariable(value = "sl_uid") UUID uid) {
-        return this.lecturerService.getTables(uid);
+    public List<Float> getGroups(@PathVariable(value = "sl_uid") UUID uid) {
+        return this.lecturerService.getGroups(uid);
+    }
+
+    @GetMapping("/lecturer/table/{sl_uid}/{group}")
+    public List<LecturerInfoResponse> getTable(
+            @PathVariable(value = "sl_uid") UUID uid,
+            @PathVariable(value = "group") Float group
+    ) {
+        return this.lecturerService.getTable(uid, group);
     }
 
     @PostMapping("/lecturer")

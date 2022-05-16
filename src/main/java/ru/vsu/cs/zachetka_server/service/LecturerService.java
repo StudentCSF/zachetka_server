@@ -101,42 +101,43 @@ public class LecturerService {
         return result;
     }
 
-    public LecturerTableResponse getTables(UUID uid) {
-        List<MarkEntity> markEntities = this.markRepository.findAllBySlUid(uid);
-        Map<Float, List<LecturerInfoResponse>> result = new TreeMap<>();
-        StudentEntity student;
-        for (MarkEntity mark : markEntities) {
-            student = this.studentRepository.findById(mark.getStudUid())
-                    .orElseThrow(StudentNotFoundException::new);
-
-            SubjectEntity subjectEntity = this.subjectRepository.findById(
-                            this.subjLectRepository.findById(mark.getSlUid())
-                                    .orElseThrow(SubjLectNotFoundException::new)
-                                    .getSubjUid())
-                    .orElseThrow(SubjectNotFoundException::new);
-
-            Float group = this.studentGroupRepository.findByStudUidAndSemester(student.getUid(), subjectEntity.getSemester())
-                    .orElseThrow(StudentGroupNotFoundException::new)
-                    .getGroup();
-
-            if (!result.containsKey(group))
-                result.put(group, new ArrayList<>());
-            result.get(group).add(LecturerInfoResponse.builder()
-                    .studUid(student.getUid())
-                    .mark(mark.getMark())
-                    .studFio(student.getFio())
-                    .examDate(mark.getDate() == null ? null : mark.getDate().toString())
-                    .build()
-            );
-        }
-
-        for (List<LecturerInfoResponse> l : result.values())
-            l.sort(Comparator.comparing(LecturerInfoResponse::getStudFio));
-
-        return LecturerTableResponse.builder()
-                .table(result)
-                .build();
-    }
+//    public LecturerTableResponse getTables(UUID uid) {
+//        List<MarkEntity> markEntities = this.markRepository.findAllBySlUid(uid);
+//        Map<Float, List<LecturerInfoResponse>> result = new TreeMap<>();
+//        StudentEntity student;
+//        for (MarkEntity mark : markEntities) {
+//            student = this.studentRepository.findById(mark.getStudUid())
+//                    .orElseThrow(StudentNotFoundException::new);
+//
+//            SubjectEntity subjectEntity = this.subjectRepository.findById(
+//                            this.subjLectRepository.findById(mark.getSlUid())
+//                                    .orElseThrow(SubjLectNotFoundException::new)
+//                                    .getSubjUid())
+//                    .orElseThrow(SubjectNotFoundException::new);
+//
+//            Float group = this.studentGroupRepository.findByStudUidAndSemester(student.getUid(), subjectEntity.getSemester())
+//                    .orElseThrow(StudentGroupNotFoundException::new)
+//                    .getGroup();
+//
+//            if (!result.containsKey(group))
+//                result.put(group, new ArrayList<>());
+//
+//            result.get(group).add(LecturerInfoResponse.builder()
+//                    .studUid(student.getUid())
+//                    .mark(mark.getMark())
+//                    .studFio(student.getFio())
+//                    .examDate(mark.getDate() == null ? null : mark.getDate().toString())
+//                    .build()
+//            );
+//        }
+//
+//        for (List<LecturerInfoResponse> l : result.values())
+//            l.sort(Comparator.comparing(LecturerInfoResponse::getStudFio));
+//
+//        return LecturerTableResponse.builder()
+//                .table(result)
+//                .build();
+//    }
 
     public void addLecturer(AddLecturerRequest addLecturerRequest) {
         UUID newUserUid = this.userService.addUser(AddUserRequest.builder()
@@ -155,5 +156,100 @@ public class LecturerService {
                 .fio(addLecturerRequest.getFio())
                 .build()
         );
+    }
+
+    public List<Float> getGroups(UUID uid) {
+
+        SubjLectEntity subjLectEntity = this.subjLectRepository.findById(uid)
+                .orElseThrow(SubjLectNotFoundException::new);
+
+        String period = subjLectEntity.getPeriod();
+
+        SubjectEntity subjectEntity = this.subjectRepository.findById(subjLectEntity.getSubjUid())
+                .orElseThrow(SubjectNotFoundException::new);
+
+        Byte semester = subjectEntity.getSemester();
+
+        int year = Integer.parseInt(period.split("-")[(semester + 1) % 2]);
+
+        List<StudentEntity> studentEntities = this.studentRepository.findAllById(
+                this.markRepository.findAllBySlUid(uid)
+                        .stream()
+                        .map(MarkEntity::getStudUid)
+                        .collect(Collectors.toList()));
+
+        List<StudentEntity> actual = new ArrayList<>();
+
+        for (StudentEntity stud : studentEntities) {
+            int is = stud.getInitSem().intValue();
+            int diff = semester - is;
+            if (semester % 2 != is % 2) diff++;
+            if (diff / 2 + stud.getInitYear() == year)
+                actual.add(stud);
+        }
+
+        return this.studentGroupRepository.findAllByStudUidInAndSemesterEquals(
+                        actual.stream()
+                                .map(StudentEntity::getUid)
+                                .collect(Collectors.toList()),
+                        semester)
+                .stream()
+                .map(StudentGroupEntity::getGroup)
+                .collect(Collectors.toList());
+    }
+
+    public List<LecturerInfoResponse> getTable(UUID uid, Float g) {
+        Map<UUID, MarkEntity> markEntities = this.markRepository.findAllBySlUid(uid)
+                .stream()
+                .collect(Collectors.toMap(
+                        MarkEntity::getStudUid,
+                        x -> x
+                ));
+
+        SubjLectEntity subjLectEntity = this.subjLectRepository.findById(uid)
+                .orElseThrow(SubjLectNotFoundException::new);
+
+        String period = subjLectEntity.getPeriod();
+
+        SubjectEntity subjectEntity = this.subjectRepository.findById(subjLectEntity.getSubjUid())
+                .orElseThrow(SubjectNotFoundException::new);
+
+        Byte semester = subjectEntity.getSemester();
+
+        int year = Integer.parseInt(period.split("-")[(semester + 1) % 2]);
+
+        List<StudentEntity> studentEntities = this.studentRepository.findAllById(
+                this.markRepository.findAllBySlUid(uid)
+                        .stream()
+                        .map(MarkEntity::getStudUid)
+                        .collect(Collectors.toList()));
+
+        Map<UUID, StudentEntity> actual = new HashMap<>();
+
+        for (StudentEntity stud : studentEntities) {
+            int is = stud.getInitSem().intValue();
+            int diff = semester - is;
+            if (semester % 2 != is % 2) diff++;
+            if (diff / 2 + stud.getInitYear() == year)
+                actual.put(stud.getUid(), stud);
+        }
+
+        return this.studentGroupRepository.findAllByStudUidInAndGroupEqualsAndSemesterEquals(
+                        actual.values()
+                                .stream()
+                                .map(StudentEntity::getUid)
+                                .collect(Collectors.toList()),
+                        g, semester)
+                .stream()
+                .map(StudentGroupEntity::getStudUid)
+                .map(x -> LecturerInfoResponse.builder()
+                        .examDate(markEntities.get(x).getDate() == null ? null :
+                                markEntities.get(x).getDate().toString())
+                        .studFio(actual.get(x).getFio())
+                        .mark(markEntities.get(x).getMark())
+                        .studUid(x)
+                        .build())
+                .sorted(Comparator.comparing(LecturerInfoResponse::getStudFio))
+                .collect(Collectors.toList());
     }
 }
