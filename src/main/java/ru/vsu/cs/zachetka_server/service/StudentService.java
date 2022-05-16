@@ -8,12 +8,14 @@ import ru.vsu.cs.zachetka_server.model.dto.request.AddStudentRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.AddUserRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.StudentRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.MainStudentInfoResponse;
+import ru.vsu.cs.zachetka_server.model.dto.response.student.StudentFirstResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.student.StudentInfoResponse;
 import ru.vsu.cs.zachetka_server.model.entity.*;
 import ru.vsu.cs.zachetka_server.model.enumerate.UserRole;
 import ru.vsu.cs.zachetka_server.repository.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -125,5 +127,82 @@ public class StudentService {
                 .initSem(addStudentRequest.getInitSem())
                 .build()
         );
+    }
+
+    public StudentFirstResponse getSemesters(UUID uid) {
+        StudentEntity student = this.studentRepository.findByUserUid(uid)
+                .orElseThrow(UserNotFoundException::new);
+
+        UUID studUid = student.getUid();
+
+        List<Byte> sems = this.studentGroupRepository.findAllByStudUid(studUid)
+                .stream()
+                .map(StudentGroupEntity::getSemester)
+                .filter(x -> !this.getInfo(studUid, x).isEmpty())
+                .sorted()
+                .collect(Collectors.toList());
+
+        return StudentFirstResponse.builder()
+                .studUid(studUid)
+                .semesters(sems)
+                .fio(student.getFio())
+                .build();
+    }
+
+    public List<StudentInfoResponse> getInfo(UUID uid, Byte sem) {
+
+        Map<UUID, MarkEntity> marks = this.markRepository.findAllByStudUid(uid)
+                .stream()
+                .collect(Collectors.toMap(
+                        MarkEntity::getSlUid,
+                        x -> x
+                ));
+
+        Map<UUID, SubjLectEntity> sls = this.subjLectRepository.findAllById(marks.values()
+                        .stream()
+                        .map(MarkEntity::getSlUid)
+                        .collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(
+                        SubjLectEntity::getSubjUid,
+                        x -> x
+                ));
+
+        Map<UUID, SubjectEntity> subjs = this.subjectRepository.findAllById(sls.values()
+                        .stream()
+                        .map(SubjLectEntity::getSubjUid)
+                        .collect(Collectors.toList()))
+                .stream()
+                .filter(x -> x.getSemester().equals(sem))
+                .collect(Collectors.toList())
+                .stream()
+                .collect(Collectors.toMap(
+                        SubjectEntity::getUid,
+                        x -> x
+                ));
+
+        List<SubjLectEntity> actual = subjs.values().stream()
+                .map(x -> sls.get(x.getUid()))
+                .collect(Collectors.toList());
+
+        Map<UUID, LecturerEntity> lects = this.lecturerRepository.findAllById(actual.stream()
+                        .map(SubjLectEntity::getLectUid)
+                        .collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(
+                        LecturerEntity::getUid,
+                        x -> x
+                ));
+
+        return actual.stream()
+                .map(x -> StudentInfoResponse.builder()
+                        .date(marks.get(x.getUid()).getDate())
+                        .mark(marks.get(x.getUid()).getMark())
+                        .lectFio(lects.get(x.getLectUid()).getFio())
+                        .subjName(subjs.get(x.getSubjUid()).getName())
+                        .build())
+                .filter(x -> x.getDate() != null && x.getMark() != null)
+                .sorted(Comparator.comparing(StudentInfoResponse::getMark)
+                        .thenComparing(StudentInfoResponse::getSubjName))
+                .collect(Collectors.toList());
     }
 }

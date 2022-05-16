@@ -17,6 +17,8 @@ public interface StudentGroupRepository extends JpaRepository<StudentGroupEntity
 
     List<StudentGroupEntity> findAllByGroup(Float group);
 
+    List<StudentGroupEntity> findAllByStudUid(UUID studUid);
+
     List<StudentGroupEntity> findAllByStudUidIn(List<UUID> uids);
 
     List<StudentGroupEntity> findAllByStudUidInAndSemesterEquals(List<UUID> uids, Byte sem);
