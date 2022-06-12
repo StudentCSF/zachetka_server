@@ -159,7 +159,7 @@ public class LecturerService {
                         semester)
                 .stream()
                 .map(StudentGroupEntity::getGroup)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     public List<LecturerInfoResponse> getTable(UUID uid, Float g) {
