@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class AddMarkRawsRequest implements IValidated {
+public class AddMarkRowsRequest implements IValidated {
 
     @NotNull
     private Float group;

@@ -1,7 +1,7 @@
 package ru.vsu.cs.zachetka_server.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRawsRequest;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRowsRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectsAndGroupsResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.lecturer.LecturerInfoResponse;
@@ -20,7 +20,7 @@ public class MarkController {
     }
 
     @PostMapping("/mark")
-    public void addMark(@RequestBody AddMarkRawsRequest markRequest) {
+    public void addMark(@RequestBody AddMarkRowsRequest markRequest) {
         this.markService.addMark(markRequest);
     }
 

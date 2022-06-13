@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vsu.cs.zachetka_server.component.BaseRequestValidationComponent;
 import ru.vsu.cs.zachetka_server.exception.*;
-import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRawsRequest;
+import ru.vsu.cs.zachetka_server.model.dto.request.AddMarkRowsRequest;
 import ru.vsu.cs.zachetka_server.model.dto.request.UpdateGroupMarksRequest;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectResponse;
 import ru.vsu.cs.zachetka_server.model.dto.response.SubjLectsAndGroupsResponse;
@@ -152,12 +152,12 @@ public class MarkService {
                 .build();
     }
 
-    public void addMark(AddMarkRawsRequest addMarkRawsRequest) {
-        if (!this.baseRequestValidationComponent.isValid(addMarkRawsRequest)) {
+    public void addMark(AddMarkRowsRequest addMarkRowsRequest) {
+        if (!this.baseRequestValidationComponent.isValid(addMarkRowsRequest)) {
             throw new RequestNotValidException();
         }
 
-        SubjLectEntity subjLectEntity = this.subjLectRepository.findById(addMarkRawsRequest.getSlUid())
+        SubjLectEntity subjLectEntity = this.subjLectRepository.findById(addMarkRowsRequest.getSlUid())
                 .orElseThrow(SubjLectNotFoundException::new);
 
         SubjectEntity subjectEntity = this.subjectRepository.findById(subjLectEntity.getSubjUid())
@@ -170,7 +170,7 @@ public class MarkService {
         int year = Integer.parseInt(period.split("-")[(semester + 1) % 2]);
 
         List<StudentGroupEntity> studentGroupEntities = this.studentGroupRepository.findAllByGroupAndSemester(
-                addMarkRawsRequest.getGroup(),
+                addMarkRowsRequest.getGroup(),
                 semester);
 
         List<StudentEntity> studentEntities = this.studentRepository.findAllById(studentGroupEntities.stream()
@@ -186,21 +186,26 @@ public class MarkService {
             if (diff / 2 + stud.getInitYear() == year)
                 filteredStudents.add(stud.getUid());
         }
+        List<UUID> forRem = filteredStudents.stream()
+                .filter(x -> this.markRepository.findByStudUidAndSlUid(x, addMarkRowsRequest.getSlUid()).isPresent())
+                .collect(Collectors.toList());
+
+        filteredStudents.removeAll(forRem);
 
         List<MarkEntity> markEntities = this.markRepository.findAllByStudUidInAndSlUidEquals(
                 filteredStudents,
-                addMarkRawsRequest.getSlUid()
+                addMarkRowsRequest.getSlUid()
         );
 
-        if (!markEntities.isEmpty()) {
-            throw new MarkAlreadyExistsException();
-        }
+//        if (!markEntities.isEmpty()) {
+//            throw new MarkAlreadyExistsException();
+//        }
 
         List<MarkEntity> add = filteredStudents
                 .stream()
                 .map(x -> MarkEntity.builder()
                         .uid(UUID.randomUUID())
-                        .slUid(addMarkRawsRequest.getSlUid())
+                        .slUid(addMarkRowsRequest.getSlUid())
                         .date(null)
                         .mark(null)
                         .studUid(x)
