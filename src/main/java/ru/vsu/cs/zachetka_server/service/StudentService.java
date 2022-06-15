@@ -69,14 +69,14 @@ public class StudentService {
             throw new RequestNotValidException();
         }
 
-        if (this.studentRepository.findByFioAndInitYearAndInitSem(
-                        addStudentRequest.getFio().trim(),
-                        addStudentRequest.getInitYear(),
-                        addStudentRequest.getInitSem())
-                .isPresent()
-        ) {
-            throw new StudentAlreadyExistsException();
-        }
+//        if (this.studentRepository.findByFioAndInitYearAndInitSem(
+//                        addStudentRequest.getFio().trim(),
+//                        addStudentRequest.getInitYear(),
+//                        addStudentRequest.getInitSem())
+//                .isPresent()
+//        ) {
+//            throw new StudentAlreadyExistsException();
+//        }
 
         this.studentRepository.save(StudentEntity.builder()
                 .userUid(newUserUid)
